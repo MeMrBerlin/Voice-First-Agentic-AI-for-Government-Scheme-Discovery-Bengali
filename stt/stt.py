@@ -11,7 +11,7 @@ import os
 model = whisper.load_model("small")
 
 # CHANGE THIS if needed (we will verify mic later)
-MIC_DEVICE_INDEX = None  # Set to an integer if default mic fails
+MIC_DEVICE_INDEX = 1  # Set to an integer if default mic fails
 
 SAMPLE_RATE = 16000
 

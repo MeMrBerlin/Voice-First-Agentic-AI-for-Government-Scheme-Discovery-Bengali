@@ -37,7 +37,7 @@ def check_eligibility(profile: dict):
     if age >= 60:
         return "OLD_AGE_PENSION"
 
-    if occupation == "farmer" and income <= 200000:
+    if occupation == "farmer" and income <= 600000:
         return "PM_KISAN"
 
     return None

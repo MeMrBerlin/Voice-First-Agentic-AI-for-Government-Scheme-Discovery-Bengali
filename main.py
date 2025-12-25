@@ -8,15 +8,15 @@ from agent.executor import execute
 from agent.evaluator import evaluate
 
 from memory.session_store import SessionMemory
-from utils.input_validation import extract_digits, is_valid_text
+from utils.input_validation import extract_digits, is_valid_text, interpret_income
 
 
 # -------------------------
 # Question prompts (Bengali)
 # -------------------------
 QUESTIONS = {
-    "ASK_AGE": "আপনার বয়স কত?",
-    "ASK_INCOME": "আপনার বার্ষিক আয় কত?",
+    "ASK_AGE": "আপনার বয়স কত? (শুধু সংখ্যা বলুন, যেমন: ৩০)",
+    "ASK_INCOME": "আপনার বার্ষিক আয় কত? (শুধু সংখ্যা বলুন, যেমন: ৫)",
     "ASK_OCCUPATION": "আপনার পেশা কী? (farmer / other)",
     "ASK_STATE": "আপনি কোন রাজ্যে থাকেন?"
 }
@@ -57,15 +57,23 @@ def run_agent():
                 text_to_speech("আমি শুনতে পাইনি। অনুগ্রহ করে আবার বলুন।")
                 continue
 
-            # Numeric fields validation
-            if field in ["age", "income"]:
+            # -------- Age handling --------
+            if field == "age":
                 number = extract_digits(user_input)
                 if not number:
-                    text_to_speech("সংখ্যাটি স্পষ্ট নয়। অনুগ্রহ করে শুধু সংখ্যা বলুন।")
+                    text_to_speech("বয়স স্পষ্ট নয়। অনুগ্রহ করে শুধু সংখ্যা বলুন।")
                     continue
                 user_input = number
 
-            # Contradiction handling
+            # -------- Income handling (Lakhs logic) --------
+            if field == "income":
+                income_value = interpret_income(user_input)
+                if not income_value:
+                    text_to_speech("আয়ের পরিমাণ স্পষ্ট নয়। অনুগ্রহ করে আবার বলুন।")
+                    continue
+                user_input = income_value
+
+            # -------- Contradiction handling --------
             contradiction, old_value = memory.detect_contradiction(field, user_input)
             if contradiction:
                 text_to_speech(
