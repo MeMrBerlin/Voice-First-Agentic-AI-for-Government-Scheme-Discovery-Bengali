@@ -1,0 +1,15 @@
+# Core AI / ML
+openai-whisper
+torch
+
+# Audio input (microphone)
+sounddevice
+scipy
+numpy
+
+# Text-to-Speech (Bengali)
+gTTS
+playsound==1.2.2
+
+# Utility
+uuid
